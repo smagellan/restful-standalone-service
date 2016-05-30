@@ -1,7 +1,8 @@
 package warmup.task.rest;
 
 import org.slf4j.LoggerFactory;
-import warmup.task.ApiProviderHolder;
+import warmup.task.ApiInterface;
+import warmup.task.Constants;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
@@ -13,15 +14,19 @@ import java.util.List;
 /**
  * Created by vladimir on 5/26/16.
  */
-@Path("api-v1/user")
+@Path(Constants.BASE_PATH)
 public class UserRestEndpoint {
+    @javax.inject.Inject
+    private ApiInterface apiInterface;
+
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(UserRestEndpoint.class);
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listUsers() {
         try {
-            List<Long> tmp = new ArrayList<>(ApiProviderHolder.instance.userIds());
+            LOGGER.debug("apiInterface: {}", apiInterface);
+            List<Long> tmp = new ArrayList<>(apiInterface.userIds());
             GenericEntity<List<Long>> wrapped = new GenericEntity<List<Long>>(tmp){};
             Response.ResponseBuilder bldr = Response.ok(wrapped);
             return bldr.build();
@@ -37,7 +42,7 @@ public class UserRestEndpoint {
     public long createUser(long balance) {
         try {
             LOGGER.debug("creating user with balance {}", balance);
-            return ApiProviderHolder.instance.createAccount(balance);
+            return apiInterface.createAccount(balance);
         } catch (Exception ex) {
             throw new WebApplicationException(ex);
         }
@@ -45,22 +50,24 @@ public class UserRestEndpoint {
 
     @GET
     @Path("{uid}/balance")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String userbalance(@PathParam("uid") long uid) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public long userbalance(@PathParam("uid") long uid) {
         try {
-            return "userbalance for " + uid;
+            return apiInterface.userBalance(uid);
         } catch (Exception ex) {
             throw new WebApplicationException(ex);
         }
     }
 
     @POST
-    @Path("transfer")
-    @Consumes(MediaType.TEXT_PLAIN)
-    @Produces(MediaType.TEXT_PLAIN)
-    public String transfer(String msg) {
+    @Path("{uidFrom}/transfer/{uidTo}/{moneyAmount}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public long transfer(@PathParam("uidFrom") long uidFrom, @PathParam("uidTo")long uidTo, @PathParam("moneyAmount")long moneyAmount) {
         try {
-            return msg + "world";
+            apiInterface.transfer(uidFrom, uidTo, moneyAmount);
+            return 0;
         } catch (Exception ex) {
             throw new WebApplicationException(ex);
         }

@@ -1,5 +1,7 @@
 package warmup.task;
 
+import javax.inject.Singleton;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,14 +11,30 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Created by vladimir on 5/26/16.
  */
-public class ApiProvider implements ApiInterface {
+
+@Singleton
+public class ApiInterfaceImpl implements ApiInterface {
     private final ConcurrentHashMap<Long, Account> accounts;
     private final AtomicLong idGenerator;
 
 
-    public ApiProvider() {
+    public ApiInterfaceImpl() {
         this.accounts    = new ConcurrentHashMap<>();
         this.idGenerator = new AtomicLong(1);
+    }
+
+    @Override
+    public long userBalance(long uid) throws ProcessingException {
+        Account account = accounts.get(uid);
+        if (account != null) {
+            long result;
+            synchronized (account) {
+                result = account.getMoney();
+            }
+            return  result;
+        } else {
+            throw new ProcessingException("unknown account id");
+        }
     }
 
     public long createAccount(long initialAmount) throws ProcessingException {
