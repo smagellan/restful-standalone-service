@@ -7,14 +7,13 @@ import org.junit.Before;
  * Created by vladimir on 5/30/16.
  */
 public class RestApiProviderTest {
-    public static final int DEFAULT_PORT = 8282;
 
     private final JettyRunner jettyRunner;
     private final String endPointUrl;
 
     public RestApiProviderTest() {
-        this.jettyRunner = new JettyRunner(DEFAULT_PORT);
-        this.endPointUrl = String.format("http://localhost:%d/%s", DEFAULT_PORT, Constants.BASE_PATH);
+        this.jettyRunner = new JettyRunner(Constants.DEFAULT_PORT);
+        this.endPointUrl = String.format("http://localhost:%d/%s", Constants.DEFAULT_PORT, Constants.BASE_PATH);
     }
 
     @Before

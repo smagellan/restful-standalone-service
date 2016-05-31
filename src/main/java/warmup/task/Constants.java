@@ -5,9 +5,10 @@ package warmup.task;
  */
 public class Constants {
     public static  final String BASE_PATH = "api-v1/user";
+    public static final int DEFAULT_PORT = 8282;
 
 
     private Constants() {
-
+        throw new IllegalStateException("do not do it");
     }
 }

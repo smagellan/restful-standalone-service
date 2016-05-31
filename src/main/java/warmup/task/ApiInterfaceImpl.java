@@ -53,6 +53,8 @@ public class ApiInterfaceImpl implements ApiInterface {
             if (srcAccount == null || destAccount == null) {
                 throw new ProcessingException("illegal account id");
             } else {
+                //Plain old 'synchronized' is used here for the sake of simplicity.
+                //ReentrantReadWriteLock is better choice given some operations are read-only (e.g. userBalance)
                 Object monitor1 = srcAccountId < destAccountId ? srcAccount : destAccount;
                 Object monitor2 = srcAccountId < destAccountId ? destAccount : srcAccount;
                 synchronized (monitor1) {
@@ -61,6 +63,7 @@ public class ApiInterfaceImpl implements ApiInterface {
                             srcAccount.setMoney(srcAccount.getMoney() - amount);
                             destAccount.setMoney(destAccount.getMoney() + amount);
                         } else {
+                            //Not enough minerals. That's it.
                             throw new ProcessingException("not enough money");
                         }
                     }

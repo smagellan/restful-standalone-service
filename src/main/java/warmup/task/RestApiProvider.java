@@ -14,6 +14,9 @@ import java.util.Set;
 /**
  * Created by vladimir on 5/30/16.
  */
+
+// TODO: These 'response.getStatusInfo() == Response.Status.OK' are insane.
+// Can I make Invocation.Builderto to throw exceptions if needed?
 public class RestApiProvider implements ApiInterface, AutoCloseable{
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(RestApiProvider.class);
 
@@ -117,7 +120,8 @@ public class RestApiProvider implements ApiInterface, AutoCloseable{
 
 
     public static void main(String[] args) throws ProcessingException, Exception {
-        try (RestApiProvider client = new RestApiProvider("http://localhost:8282/api-v1/user")) {
+        final String basePath = String.format("http://localhost:%d/%s", Constants.BASE_PATH, Constants.DEFAULT_PORT);
+        try (RestApiProvider client = new RestApiProvider(basePath)) {
             final long uid1 = client.createAccount(1000);
             final long uid2 = client.createAccount(1000);
             final long uid3 = client.createAccount(1000);

@@ -9,7 +9,7 @@ public class Main {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws Exception {
-        JettyRunner runner = new JettyRunner(8282);
+        JettyRunner runner = new JettyRunner(Constants.DEFAULT_PORT);
         runner.startServer();
         Runtime.getRuntime().addShutdownHook(new Thread(){
             @Override
