@@ -3,7 +3,7 @@ package warmup.task;
 /**
  * Created by vladimir on 5/30/16.
  */
-public class WorkHorse {
+class WorkHorse {
     private final ApiInterface apiInterface;
     public WorkHorse(ApiInterface apiInterface) {
         this.apiInterface = apiInterface;
